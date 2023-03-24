@@ -38,6 +38,7 @@ export class RxjsLearningComponent implements OnInit {
     );
     console.log('amoount', amoount);
     console.log('moment', moment().startOf('day'));
+    console.log(this.roundToTwoDecimal(8.133));
   }
 
   calRoomAmount(
@@ -61,5 +62,15 @@ export class RxjsLearningComponent implements OnInit {
       return (monthPrice - discount) * months;
     }
     return 0;
+  }
+
+  roundToTwoDecimal(number: number) {
+    const thirdDecimalPlace = Math.floor((number * 100) % 10);
+    console.log({ thirdDecimalPlace });
+    if (thirdDecimalPlace >= 5) {
+      return Math.ceil(number * 100) / 100;
+    } else {
+      return Math.floor(number * 100) / 100;
+    }
   }
 }
