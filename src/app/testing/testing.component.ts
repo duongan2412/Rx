@@ -58,12 +58,52 @@ export class Testing implements OnInit {
     // console.log(this.roundToTwoDecimal(8.133));
     // this.checkRange();
     let bk: Booking = {
-    oldCheckIn: '2023-04-08',
-    oldCheckOut: '2023-04-13',
-    checkinTime: '2023-04-08',
-    checkoutTime: '2023-04-14'
-}
-    console.log(this.calculateQuantity('2023-04-08', bk));
+      oldCheckIn: '2023-04-08',
+      oldCheckOut: '2023-04-13',
+      checkinTime: '2023-04-08',
+      checkoutTime: '2023-04-14',
+    };
+    console.log(
+      this.calculateQuantity(
+        '2023-04-08',
+        '2023-04-08',
+        '2023-04-12',
+        '2023-04-08',
+        '2023-04-14'
+      )
+    ); // 0
+    console.log(
+      this.calculateQuantity(
+        '2023-04-09',
+        '2023-04-08',
+        '2023-04-12',
+        '2023-04-08',
+        '2023-04-14'
+      )
+    ); // 0
+    console.log(
+      this.calculateQuantity(
+        '2023-04-10',
+        '2023-04-08',
+        '2023-04-12',
+        '2023-04-08',
+        '2023-04-14'
+      )
+    ); // 1
+    console.log(
+      this.calculateQuantity(
+        '2023-04-09',
+        '2023-04-08',
+        '2023-04-13',
+        '2023-04-08',
+        '2023-04-10'
+      )
+    ); // 1
+
+    // console.log(this.calculateQuantity('2023-04-08', '2023-04-08', '2023-04-12', '2023-04-08', '2023-04-10')); // 0
+    // console.log(this.calculateQuantity('2023-04-09', '2023-04-08', '2023-04-12', '2023-04-08', '2023-04-10')); // 0
+    // console.log(this.calculateQuantity('2023-04-10', '2023-04-08', '2023-04-12', '2023-04-08', '2023-04-10')); // 1
+    // console.log(this.calculateQuantity('2023-04-11', '2023-04-08', '2023-04-12', '2023-04-08', '2023-04-10')); // 1
   }
 
   calRoomAmount(
@@ -143,23 +183,39 @@ export class Testing implements OnInit {
     }
   }
 
-  calculateQuantity(date: string, booking: Booking) {
+  calculateQuantity(
+    date: string,
+    newStartDate: string,
+    newEndDate: string,
+    oldStartDate: string,
+    oldEndDate: string
+  ) {
+    console.log({ date, oldStartDate, oldEndDate, newStartDate, newEndDate });
     const momentDate = moment(date);
-    const momentOldStartDate = moment(booking.oldCheckIn);
-    const momentOldEndDate = moment(booking.oldCheckOut);
-    const momentCheckinTime = moment(booking.checkinTime);
-    const momentCheckoutTime = moment(booking.checkoutTime);
-  
-    if (momentDate.isBetween(momentOldStartDate, momentOldEndDate, undefined, '[]') &&
-        momentDate.isBetween(momentCheckinTime, momentCheckoutTime, undefined, '[]')) {
-      return 0;
-    }
-  
-    if (momentDate.isBefore(momentCheckinTime, 'day') ||
-        momentDate.isAfter(momentCheckoutTime.add(-1, 'day'), 'day')) {
+    const momentOldStartDate = moment(oldStartDate).startOf('day');
+    const momentOldEndDate = moment(oldEndDate).startOf('day');
+    const momentCheckinTime = moment(newStartDate).startOf('day');
+    const momentCheckoutTime = moment(newEndDate).startOf('day');
+
+    if (
+      momentDate.isBefore(momentCheckinTime) ||
+      momentDate.isAfter(momentCheckoutTime.add(-1, 'day'))
+    ) {
       return -1;
     }
-  
+
+    if (
+      momentDate.isBetween(
+        momentOldStartDate,
+        momentOldEndDate.add(-1, 'days'),
+        null,
+        '[]'
+      ) &&
+      momentDate.isBetween(momentCheckinTime, momentCheckoutTime, null, '[]')
+    ) {
+      return 0;
+    }
+
     return 1;
   }
 }
@@ -172,8 +228,8 @@ interface Price {
 }
 
 interface Booking {
-  oldCheckIn: string,
-  oldCheckOut: string,
-  checkinTime: string,
-  checkoutTime: string
+  oldCheckIn: string;
+  oldCheckOut: string;
+  checkinTime: string;
+  checkoutTime: string;
 }
