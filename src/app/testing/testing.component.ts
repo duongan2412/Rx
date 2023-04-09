@@ -57,7 +57,13 @@ export class Testing implements OnInit {
     // console.log('moment', moment().startOf('day'));
     // console.log(this.roundToTwoDecimal(8.133));
     // this.checkRange();
-    console.log(this.priceArray);
+    let bk: Booking = {
+    oldCheckIn: '2023-04-08',
+    oldCheckOut: '2023-04-13',
+    checkinTime: '2023-04-08',
+    checkoutTime: '2023-04-14'
+}
+    console.log(this.calculateQuantity('2023-04-08', bk));
   }
 
   calRoomAmount(
@@ -136,6 +142,26 @@ export class Testing implements OnInit {
       console.log('No matching price found.');
     }
   }
+
+  calculateQuantity(date: string, booking: Booking) {
+    const momentDate = moment(date);
+    const momentOldStartDate = moment(booking.oldCheckIn);
+    const momentOldEndDate = moment(booking.oldCheckOut);
+    const momentCheckinTime = moment(booking.checkinTime);
+    const momentCheckoutTime = moment(booking.checkoutTime);
+  
+    if (momentDate.isBetween(momentOldStartDate, momentOldEndDate, undefined, '[]') &&
+        momentDate.isBetween(momentCheckinTime, momentCheckoutTime, undefined, '[]')) {
+      return 0;
+    }
+  
+    if (momentDate.isBefore(momentCheckinTime, 'day') ||
+        momentDate.isAfter(momentCheckoutTime.add(-1, 'day'), 'day')) {
+      return -1;
+    }
+  
+    return 1;
+  }
 }
 
 interface Price {
@@ -143,4 +169,11 @@ interface Price {
   applyFromDate: string;
   applyToDate: string;
   code: string;
+}
+
+interface Booking {
+  oldCheckIn: string,
+  oldCheckOut: string,
+  checkinTime: string,
+  checkoutTime: string
 }
