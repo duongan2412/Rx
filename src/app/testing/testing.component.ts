@@ -104,7 +104,7 @@ export class Testing implements OnInit {
     // console.log(this.calculateQuantity('2023-04-09', '2023-04-08', '2023-04-12', '2023-04-08', '2023-04-10')); // 0
     // console.log(this.calculateQuantity('2023-04-10', '2023-04-08', '2023-04-12', '2023-04-08', '2023-04-10')); // 1
     // console.log(this.calculateQuantity('2023-04-11', '2023-04-08', '2023-04-12', '2023-04-08', '2023-04-10')); // 1
-    console.log(this.calQtyByStatus(8, 3));
+    console.log(this.calQtyByStatus(5,8));
   }
 
   calRoomAmount(
@@ -222,13 +222,13 @@ export class Testing implements OnInit {
 
   calQtyByStatus(oldStatus: number, newStatus: number) {
     const quantityMap: { [key: string]: number } = {
-      '2,5': 0,
-      '2,7': 0,
-      '3,7': 1,
-      '6,7': 5,
-      '2,8': -1,
-      '6,1': 9,
-      '5,2': 3,
+      '5,-1': -1,
+      '5,2': 0,
+      '5,6': -1,
+      '5,7': 0,
+      '5,8': -1,
+      '-1,1': 9,
+      '-2,2': 3,
     };
     const key = `${oldStatus},${newStatus}`;
     return quantityMap[key] || 0;
